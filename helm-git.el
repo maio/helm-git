@@ -33,7 +33,7 @@
 ;;
 ;;; Code:
 
-(require 'helm-config)
+(require 'helm-locate)
 (require 'magit)
 
 (defun helm-git-root-dir ()
