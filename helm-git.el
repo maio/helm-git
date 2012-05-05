@@ -1,7 +1,11 @@
 ;;; helm-git.el --- Helm extension for Git.
 
 ;; Copyright (C) 2012 Marian Schubert
-;; URL: https://github.com/maio/helm-git
+
+;; Author   : Marian Schubert <marian.schubert@gmail.com>
+;; URL      : https://github.com/maio/helm-git
+;; Version  : 1.0
+;; Keywords : helm, git
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -24,12 +28,12 @@
 
 ;;; Commentary:
 ;;
-;; This library provides easy project management and navigation. The
-;; concept of a project is pretty basic - just a folder containing
-;; special file. Currently git, mercurial and bazaar repos are
-;; considered projects by default. If you want to mark a folder
-;; manually as a project just create an empty .projectile file in
-;; it. See the README for more details.
+;; Helm Git extension makes opening files from current Git repository
+;; fast and easy. It uses Git binary (using magit) to get list of
+;; project files so it's prety fast even for large projects with
+;; thousands of files. It also takes into account .gitignore file so
+;; that you only get real project files. Magit should also make it
+;; usable on wide variety of OS.
 ;;
 ;;; Code:
 
@@ -66,3 +70,5 @@
   (helm :sources '(helm-c-source-git-files)))
 
 (provide 'helm-git)
+
+;;; helm-git.el ends here
