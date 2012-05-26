@@ -54,8 +54,10 @@
 
 (defvar helm-c-source-git-files
   `((name . "Git files list")
-    (candidates . helm-c-git-files)
-    (volatile)
+    (init . (lambda ()
+              (helm-init-candidates-in-buffer
+               "*helm git*" (helm-c-git-files))))
+    (candidates-in-buffer)
     (keymap . ,helm-generic-files-map)
     (help-message . helm-generic-file-help-message)
     (mode-line . helm-generic-file-mode-line-string)
