@@ -4,7 +4,7 @@
 
 ;; Author   : Marian Schubert <marian.schubert@gmail.com>
 ;; URL      : https://github.com/maio/helm-git
-;; Version  : 1.0
+;; Version  : 1.1
 ;; Keywords : helm, git
 
 ;; This file is NOT part of GNU Emacs.
@@ -40,8 +40,24 @@
 (require 'helm-locate)
 (require 'magit)
 
+(defun helm-git-file-name-localname (path)
+  (if (file-remote-p path)
+      (tramp-file-name-localname (tramp-dissect-file-name path))
+    path))
+
+(defun helm-git-git-dir ()
+  "This function is required because magit-git-dir doesn't always return tramp path."
+  (if (file-remote-p default-directory)
+      (let ((path (tramp-dissect-file-name default-directory)))
+        (tramp-make-tramp-file-name
+         (tramp-file-name-method path)
+         (tramp-file-name-user path)
+         (tramp-file-name-host path)
+         (helm-git-file-name-localname (magit-git-dir))))
+    (magit-git-dir)))
+
 (defun helm-git-root-dir ()
-  (magit-git-string "rev-parse" "--show-toplevel"))
+  (expand-file-name ".." (helm-git-git-dir)))
 
 (defun helm-git-file-full-path (name)
   (expand-file-name name (helm-git-root-dir)))
@@ -50,7 +66,8 @@
   (find-file (helm-git-file-full-path name)))
 
 (defun helm-c-git-files ()
-  (magit-git-lines "ls-files" "--full-name" "--" (helm-git-root-dir)))
+  (magit-git-lines "ls-files" "--full-name"
+                   "--" (helm-git-file-name-localname (helm-git-root-dir))))
 
 (defvar helm-c-source-git-files
   `((name . "Git files list")
