@@ -69,6 +69,10 @@
   (magit-git-lines "ls-files" "--full-name"
                    "--" (helm-git-file-name-localname (helm-git-root-dir))))
 
+;; [NOTE] When value is changed need to restart emacs.
+(defvar helm-git-ff-action-index 4
+  "Add list git files action in `helm-c-source-find-files' at this index.")
+
 (defun helm-ff-git-find-files (candidate)
   (let ((default-directory (file-name-as-directory
                             (if (file-directory-p candidate)
