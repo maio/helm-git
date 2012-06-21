@@ -69,6 +69,23 @@
   (magit-git-lines "ls-files" "--full-name"
                    "--" (helm-git-file-name-localname (helm-git-root-dir))))
 
+(defun helm-ff-git-find-files (candidate)
+  (let ((default-directory (file-name-as-directory
+                            (if (file-directory-p candidate)
+                                (expand-file-name candidate)
+                                (file-name-directory candidate))))) 
+    (helm-run-after-quit
+     #'(lambda (d)
+         (let ((default-directory d))
+           (helm-git-find-files)))
+     default-directory)))
+
+(when (require 'helm-files)
+  (helm-add-action-to-source
+   "List git files"
+   'helm-ff-git-find-files helm-c-source-find-files
+   helm-git-ff-action-index))
+
 (defvar helm-c-source-git-files
   `((name . "Git files list")
     (init . (lambda ()
