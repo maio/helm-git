@@ -59,6 +59,16 @@
 (defun helm-git-root-dir ()
   (expand-file-name ".." (helm-git-git-dir)))
 
+(defun helm-git-root-p (candidate)
+  (setq candidate (expand-file-name candidate))
+  (let ((default-directory (if (file-directory-p candidate)
+                               (file-name-as-directory candidate)
+                               (file-name-as-directory
+                                helm-ff-default-directory))))
+    (stringp (condition-case nil
+                 (helm-git-root-dir)
+               (error nil)))))
+
 (defun helm-git-file-full-path (name)
   (expand-file-name name (helm-git-root-dir)))
 
@@ -85,9 +95,11 @@
      default-directory)))
 
 (when (require 'helm-files)
-  (helm-add-action-to-source
+  (helm-add-action-to-source-if
    "List git files"
-   'helm-ff-git-find-files helm-c-source-find-files
+   'helm-ff-git-find-files
+   helm-c-source-find-files
+   'helm-git-root-p
    helm-git-ff-action-index))
 
 (defvar helm-c-source-git-files
