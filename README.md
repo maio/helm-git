@@ -1,5 +1,7 @@
 ## Purpose
 
+### This package is deprecated. Please switch to https://github.com/emacs-helm/helm-ls-git
+
 Helm (emacs-helm/helm) Git extension makes opening files from current Git repository
 fast and easy. It uses Git binary (using magit) to get list of project files so it's
 prety fast even for large projects with thousands of files. It also takes into account
