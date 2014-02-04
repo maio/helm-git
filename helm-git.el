@@ -60,14 +60,16 @@
   (expand-file-name ".." (helm-git-git-dir)))
 
 (defun helm-git-root-p (candidate)
-  (setq candidate (expand-file-name candidate))
-  (let ((default-directory (if (file-directory-p candidate)
-                               (file-name-as-directory candidate)
-                               (file-name-as-directory
-                                helm-ff-default-directory))))
-    (stringp (condition-case nil
-                 (helm-git-root-dir)
-               (error nil)))))
+  (when (or (file-exists-p candidate)
+            (file-directory-p candidate))
+    (setq candidate (expand-file-name candidate))
+    (let ((default-directory (if (file-directory-p candidate)
+                                 (file-name-as-directory candidate)
+                                 (file-name-as-directory
+                                  helm-ff-default-directory))))
+      (stringp (condition-case nil
+                   (helm-git-root-dir)
+                 (error nil))))))
 
 (defun helm-git-file-full-path (name)
   (expand-file-name name (helm-git-root-dir)))
@@ -111,15 +113,15 @@
     (keymap . ,helm-generic-files-map)
     (help-message . helm-generic-file-help-message)
     (mode-line . helm-generic-file-mode-line-string)
-    (match helm-c-match-on-basename)
-    (type . file)
-    (action . (lambda (candidate)
-                (helm-git-find-file candidate))))
+    (candidate-transformer . helm-c-highlight-files)
+    (action-transformer helm-c-transform-file-load-el)
+    (action . (("Find file" . helm-git-find-file))))
   "Helm Git files source definition")
 
 (defun helm-git-find-files ()
   (interactive)
-  (helm :sources '(helm-c-source-git-files)))
+  (helm :sources '(helm-c-source-git-files)
+        :buffer "*git files*"))
 
 (provide 'helm-git)
 
